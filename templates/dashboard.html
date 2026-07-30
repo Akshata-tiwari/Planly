@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Planly{% endblock %}
+{% block content %}
+
+<div class="stats-card">
+    <div class="stats-info">
+        <h3>Task Progress</h3>
+        <p>{{ completed }} of {{ total }} completed</p>
+    </div>
+    <div class="progress-bar-container">
+        <!-- Using CSS Custom Property to pass percentage cleanly without VS Code errors -->
+        <div class="progress-bar" style="--progress: {{ progress }}%;"></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Add New Task</h3>
+    <form action="{{ url_for('add_task') }}" method="POST" class="grid-form">
+        <input type="text" name="title" placeholder="What needs to be done?" required class="col-span-2">
+        
+        <select name="category">
+            <option value="General">📂 General</option>
+            <option value="Work">💼 Work</option>
+            <option value="Personal">🏠 Personal</option>
+            <option value="Urgent">🔥 Urgent</option>
+        </select>
+
+        <select name="priority">
+            <option value="Low">Low Priority</option>
+            <option value="Medium" selected>Medium Priority</option>
+            <option value="High">High Priority</option>
+        </select>
+
+        <input type="date" name="due_date">
+
+        <button type="submit" class="btn btn-primary">Add Task</button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="list-header">
+        <h3>Your Tasks</h3>
+        <div class="filter-group">
+            <a href="{{ url_for('dashboard') }}" class="filter-chip">All</a>
+            <a href="{{ url_for('dashboard', category='Work') }}" class="filter-chip">Work</a>
+            <a href="{{ url_for('dashboard', category='Personal') }}" class="filter-chip">Personal</a>
+            <a href="{{ url_for('dashboard', category='Urgent') }}" class="filter-chip">Urgent</a>
+        </div>
+    </div>
+
+    {% if not tasks %}
+        <p class="empty-state">🎉 No tasks found! Create a new task above.</p>
+    {% else %}
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="task-item {% if task.completed %}completed{% endif %}">
+                    <form action="{{ url_for('toggle_task', task_id=task.id) }}" method="POST">
+                        <button type="submit" class="checkbox-btn">
+                            {% if task.completed %}✓{% endif %}
+                        </button>
+                    </form>
+
+                    <div class="task-details">
+                        <span class="task-title">{{ task.title }}</span>
+                        <div class="task-meta">
+                            <span class="badge category-{{ task.category|lower }}">{{ task.category }}</span>
+                            <span class="badge priority-{{ task.priority|lower }}">{{ task.priority }}</span>
+                            {% if task.due_date %}
+                                <span class="due-tag">📅 {{ task.due_date }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <form action="{{ url_for('delete_task', task_id=task.id) }}" method="POST">
+                        <button type="submit" class="btn-delete">&times;</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

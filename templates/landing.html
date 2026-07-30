@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Planly | Modern Task Management{% endblock %}
+
+{% block content %}
+<div class="landing-hero">
+    <!-- Brand Logo Image -->
+    <div class="hero-logo-wrapper">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Planly Logo" class="hero-logo">
+    </div>
+
+    <div class="badge-pill">🚀 Task Management Made Simple</div>
+    <h1 class="hero-title">Organize your work and life, <span class="text-gradient">finally.</span></h1>
+    <p class="hero-subtitle">
+        Planly helps you simplify daily routines, track goals with categories, and view real-time productivity progress.
+    </p>
+    <div class="hero-actions">
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Get Started Free</a>
+        <a href="{{ url_for('login') }}" class="btn btn-secondary btn-lg">Sign In</a>
+    </div>
+</div>
+
+<div class="features-grid">
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Progress Analytics</h3>
+        <p>Visualize your daily productivity with real-time progress bars and completion stats.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🏷️</div>
+        <h3>Categories & Priorities</h3>
+        <p>Tag tasks as Work, Personal, or Urgent and set priorities so you focus on what matters.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Private & Secure</h3>
+        <p>Your tasks are completely private and tied securely to your account with hashed passwords.</p>
+    </div>
+</div>
+{% endblock %}

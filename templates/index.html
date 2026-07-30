@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planly | Simple Task Management</title>
+    
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <main class="container">
+        <!-- Header Section -->
+        <header class="app-header">
+            <div class="logo-group">
+                <span class="logo-icon">✓</span>
+                <h1>Planly</h1>
+            </div>
+            <p class="tagline">Keep track of your day, one task at a time.</p>
+        </header>
+
+        <!-- Flash messages for user feedback -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, msg in messages %}
+                        <div class="alert alert-{{ category }}">{{ msg }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Input Form -->
+        <section class="form-section">
+            <form action="{{ url_for('add_task') }}" method="POST" class="add-task-form">
+                <input 
+                    type="text" 
+                    name="title" 
+                    placeholder="Add a new task..." 
+                    maxlength="120"
+                    autocomplete="off"
+                    required
+                    autofocus
+                >
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </section>
+
+        <!-- Task List Area -->
+        <section class="list-section">
+            {% if not tasks %}
+                <div class="empty-state">
+                    <p>☕ All caught up! Relax or add a new task above.</p>
+                </div>
+            {% else %}
+                <ul class="task-list">
+                    {% for task in tasks %}
+                        <li class="task-item {% if task.completed %}is-completed{% endif %}">
+                            
+                            <!-- Toggle Complete Form -->
+                            <form action="{{ url_for('toggle_task', task_id=task.id) }}" method="POST" class="inline-form">
+                                <button type="submit" class="checkbox-btn" aria-label="Toggle task">
+                                    {% if task.completed %}
+                                        <span class="check-mark">✓</span>
+                                    {% endif %}
+                                </button>
+                            </form>
+
+                            <span class="task-title">{{ task.title }}</span>
+
+                            <!-- Delete Form (Used POST for standard semantic action) -->
+                            <form action="{{ url_for('delete_task', task_id=task.id) }}" method="POST" class="inline-form">
+                                <button type="submit" class="btn-icon delete-btn" title="Delete Task">&times;</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </section>
+    </main>
+
+</body>
+</html>

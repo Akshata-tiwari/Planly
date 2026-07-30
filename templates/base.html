@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Planly{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="nav-brand" style="text-decoration: none;">✓ Planly</a>
+        <div class="nav-user">
+            {% if current_user.is_authenticated %}
+                <span>Welcome, <strong>{{ current_user.username }}</strong></span>
+                <a href="{{ url_for('logout') }}" class="btn-sm">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn-sm">Log In</a>
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm" style="text-decoration:none;">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="main-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="alert alert-{{ category }}">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
